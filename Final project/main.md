@@ -843,6 +843,7 @@ hostname; sudo dpkg -l | grep hostname; sudo ps -aef | grep mongo | grep -v grep
 #удаляем старые пакеты mongodb 4.4
 
 sudo apt purge percona-server-mongodb* && sudo apt purge percona-mongodb* && dpkg --purge percona-server-mongodb-server && sudo percona-release disable all && apt-get update
+
 sudo apt-cache madison percona-server-mongodb
 
 #ставим пакеты mongodb 5.0
