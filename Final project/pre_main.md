@@ -124,9 +124,7 @@ yc compute instance delete mongo1
 
 **Выполняем первый этап на вм mongo1 (создание вм и подключение к вм выполнили выше)**
 
-
-
-**1.	Поставить standalone mongodb 4.4 и провести апгрейд версии до 7.0.**
+**Поставить standalone mongodb 4.4 и провести апгрейд версии до 7.0.**
 
 На данном этапе мы проведем апгред с 4.4 сразу до 7.0 и увидим, что это приведет к неработоспособному состоянию монги. А также далее проведем серию апгрейдов с 4.4 до 5.0, с 5.0 до 6.0, с 6.0 до 7.0  с работоспособным конечным состоянием монги.
 wget https://repo.percona.com/apt/percona-release_latest.$(lsb_release -sc)_all.deb
@@ -191,6 +189,7 @@ show users;
 запускаем с аутентификацией И КЛЮЧОМ
 
 hostname; sudo ps -aef | grep mongo | grep -v grep |awk '{print $2}' | sudo xargs kill -9
+
 hostname; sudo ps -aef | grep mongo | grep -v grep
 hostname; mongod --auth --keyFile /home/mongo/mongo-security/keyfile --bind_ip localhost,$(hostname) --dbpath /home/mongo/dbc --port 27001 --fork --logpath /home/mongo/dbc/dbc.log --pidfilepath /home/mongo/dbc/dbc.pid
 mongo --port 27001 -u "UserClusterAdmin" -p Andrey@123 --authenticationDatabase "admin"
