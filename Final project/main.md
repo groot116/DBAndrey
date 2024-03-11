@@ -64,16 +64,6 @@ yc compute instance list
 
 
 
-+----------------------+--------+---------------+---------+---------------+-------------+
-|          ID          |  NAME  |    ZONE ID    | STATUS  |  EXTERNAL IP  | INTERNAL IP |
-+----------------------+--------+---------------+---------+---------------+-------------+
-| fhm420rs3aflret8sj2h | mongo4 | ru-central1-a | RUNNING | 51.250.86.234 | 10.128.0.11 |
-| fhm6qfiqcoa0q1fvh8os | mongo3 | ru-central1-a | RUNNING | 51.250.73.255 | 10.128.0.32 |
-| fhm7ibhsr9573o284mkd | mongo2 | ru-central1-a | RUNNING | 51.250.13.75  | 10.128.0.21 |
-| fhmrd8t5ho37p7as0p7i | mongo1 | ru-central1-a | RUNNING | 51.250.90.20  | 10.128.0.26 |
-+----------------------+--------+---------------+---------+---------------+-------------+
-
-
 
 
 for ($i = 1; $i -le 4; $i++) {
