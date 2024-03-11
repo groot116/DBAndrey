@@ -276,7 +276,9 @@ sudo dpkg -l | grep mongod
 sudo systemctl status mongod
 hostname; sudo ps -aef | grep mongo | grep -v grep |awk '{print $2}' | sudo xargs kill -9
 hostname; sudo ps -aef | grep mongo | grep -v grep
+
 Шаг, по инструкции но для fork процесса не надо делать
+
 --sudo chown -R mongod:mongod /home/mongo/dbc 
 
 **«видим цель не видим преград»=))**
@@ -307,20 +309,25 @@ mongo1
 {"t":{"$date":"2024-03-06T17:32:21.846+00:00"},"s":"I",  "c":"REPL",     "id":4784900, "ctx":"initandlisten","msg":"Stepping down the ReplicationCoordinator for shutdown","attr":{"waitTimeMillis":15000}}
 
 Ошибка связана с тем, что версия mongodb несовместима с файлами данных, смонтированными в формате /data/db.
+
 Разрыв между версиями слишком велик. Вам нужно будет обновить его поэтапно:
 
 •	От 4,4 до 5,0 https://www.mongodb.com/docs/v6.0/release-notes/5.0-upgrade-replica-set/
+
 •	От 5.0 до 6.0 https://www.mongodb.com/docs/v6.0/release-notes/6.0-upgrade-replica-set/
 
 Если размер набора данных позволяет, вы можете сократить весь процесс, создав резервную копию данных из версии 4.4, запустив версию 6 с новым пустым томом, подключенным к /data/db, и восстановив базу данных из резервной копии.
 
 На этот случай неуспешного апгрейда у нас есть бэкап в /home/mongo/backups/.
 Чистим каталог с данными
+
 sudo rm -rf /home/mongo/dbc/*
 hostname; mongod --bind_ip localhost,$(hostname) --dbpath /home/mongo/dbc --port 27001 --fork --logpath /home/mongo/dbc/dbc.log --pidfilepath /home/mongo/dbc/dbc.pid
 
 hostname; sudo ps -aef | grep mongo | grep -v grep
+
 --В 7.0 mongosh вместо shellника mongo
+
 mongosh --port 27001
 use admin
 
