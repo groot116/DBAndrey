@@ -116,6 +116,7 @@ yc compute instance delete mongo1
 
 
 **1.	Поставить standalone mongodb 4.4 и провести апгрейд версии до 7.0.**
+
 На данном этапе мы проведем апгред с 4.4 сразу до 7.0 и увидим, что это приведет к неработоспособному состоянию монги. А также далее проведем серию апгрейдов с 4.4 до 5.0, с 5.0 до 6.0, с 6.0 до 7.0  с работоспособным конечным состоянием монги.
 wget https://repo.percona.com/apt/percona-release_latest.$(lsb_release -sc)_all.deb
 sudo dpkg -i percona-release_latest.$(lsb_release -sc)_all.deb
@@ -238,6 +239,7 @@ hostname; sudo ps -aef | grep mongo | grep -v grep
 --sudo chown -R mongod:mongod /home/mongo/dbc 
 
 **«видим цель не видим преград»=))**
+
 hostname; mongod --bind_ip localhost,$(hostname) --dbpath /home/mongo/dbc --port 27001 --fork --logpath /home/mongo/dbc/dbc.log --pidfilepath /home/mongo/dbc/dbc.pid
 Ошибка:
 mongo1
@@ -296,6 +298,7 @@ local        72.00 KiB
 nasdaq_new  225.62 MiB
 
 **Теперь проделаем последовательные скользящие миграции только от версии 4.4 до 5.0 и от 5.0 до 6.0. А также от 6.0 до 7.0.**
+
  Делаем полную очистку пакетов mongodb
 hostname; sudo ps -aef | grep mongo | grep -v grep |awk '{print $2}' | sudo xargs kill -9
 hostname; sudo ps -aef | grep mongo | grep -v grep
@@ -333,6 +336,7 @@ mongorestore --port 27001 -u "UserRoot" -p Andrey@123 --authenticationDatabase "
 mongo --port 27001 -u "UserRoot" -p Andrey@123 --authenticationDatabase "admin"
 
 **Выполняем обновление с версии 4.4 до версии 5.0.**
+
 Удаляем версию 4.4
 hostname; sudo ps -aef | grep mongo | grep -v grep |awk '{print $2}' | sudo xargs kill -9
 hostname; sudo ps -aef | grep mongo | grep -v grep
@@ -358,6 +362,7 @@ hostname; mongod --auth --keyFile /home/mongo/mongo-security/keyfile --bind_ip l
 mongo --port 27001 -u "UserRoot" -p Andrey@123 --authenticationDatabase "admin"
 
 **Выполняем обновление с версии 5.0 до версии 6.0.**
+
 db.adminCommand( { getParameter: 1, featureCompatibilityVersion: 1 } )
 db.adminCommand( { setFeatureCompatibilityVersion: "5.0" } )
 
@@ -383,6 +388,7 @@ mongosh --port 27001 -u "UserRoot" -p Andrey@123 --authenticationDatabase "admin
 show dbs
 
 **Выполняем обновление с версии 6.0 до версии 7.0.**
+
 db.adminCommand( { getParameter: 1, featureCompatibilityVersion: 1 } )
 db.adminCommand( { setFeatureCompatibilityVersion: "6.0" } )
 
@@ -425,6 +431,7 @@ yc compute instance delete mongo1
 
 
 **Используемые инструкции:**
+
 1.	https://docs.percona.com/percona-server-for-mongodb/3.6/install/apt.html
 2.	https://docs.percona.com/percona-server-for-mongodb/4.4/install/upgrade-from-mongodb.html
 3.	https://docs.percona.com/percona-server-for-mongodb/4.4/install/uninstall.html
