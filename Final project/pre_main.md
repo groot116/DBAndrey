@@ -16,9 +16,8 @@ https://cloud.yandex.ru/ru/docs/cli/quickstart#windows_1
 #iex (New-Object System.Net.WebClient).DownloadString('https://storage.yandexcloud.net/yandexcloud-yc/install.ps1')
 
 Получение OAuth-токена
-https://oauth.yandex.ru/verification_code#access_token=y0_AgAAAAA_FzUYAATuwQAAAAD9HgWHAABOwTYbMEhI_6CeKTdn1r1cGJXNtA&token_type=bearer&expires_in=31536000
-y0_AgAAAAA_FzUYAATuwQAAAAD9HgWHAABOwTYbMEhI_6CeKTdn1r1cGJXNtA
-y0_AgAAAAA_FzUYAATuwQAAAAD9HgWHAABOwTYbMEhI_6CeKTdn1r1cGJXNtA
+https://oauth.yandex.ru/verification_code#access_token=**************&token_type=bearer&expires_in=31536000
+
 
 
 начать настройку профиля CLI
