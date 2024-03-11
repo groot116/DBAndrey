@@ -763,6 +763,9 @@ sudo apt update && sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y -q && sudo
 
 mongos --keyFile /home/mongo/mongo-security/keyfile --configdb RScfg/mongo1:27001,mongo2:27001,mongo3:27001 --bind_ip '0.0.0.0' --port 27000 --fork --logpath /home/mongo/dbms/dbs.log --pidfilepath /home/mongo/dbms/dbs.pid
 mongo --port 27000 -u "UserRoot" -p 123 --authenticationDatabase "admin"
+
+#стартуем балансировщик
+
 sh.startBalancer()
 
 
@@ -771,20 +774,24 @@ sh.startBalancer()
 ssh -p 22 yc-user@mongo3
 mongos --keyFile /home/mongo/mongo-security/keyfile --configdb RScfg/mongo1:27001,mongo2:27001,mongo3:27001 --bind_ip '0.0.0.0' --port 27000 --fork --logpath /home/mongo/dbms/dbs.log --pidfilepath /home/mongo/dbms/dbs.pid
 mongo --port 27000 -u "UserRoot" -p 123 --authenticationDatabase "admin"
+
+#стартуем балансировщик
+
 sh.startBalancer()
+
 
 #Поднятие версии в кластере до 5.0
 
 #Установка FeatureCompatibilityVersion (fCV): «5.0» неявно выполняет replSetReconfigдля каждого сегмента, чтобы добавить termполе в документ конфигурации реплики сегмента, и блокируется до тех пор, пока новая конфигурация не распространится на большинство членов набора реплик.
 
-#mongo4
+#mongo4 (mongos1)
 
 ssh -p 22 yc-user@mongo4
 mongo --port 27000 -u "UserRoot" -p 123 --authenticationDatabase "admin"
 db.adminCommand( { setFeatureCompatibilityVersion: "5.0" } )
 
 
-#mongo3
+#mongo3 (mongos2)
 
 ssh -p 22 yc-user@mongo3
 mongo --port 27000 -u "UserRoot" -p 123 --authenticationDatabase "admin"
