@@ -127,6 +127,7 @@ ssh -i "C:/Distr/.ssh/id_ed25519" yc-user@51.250.86.234
 #mongo1-4
 
 vi /home/yc-user/.ssh/authorized_keys
+
 #добавить с новой строки public key id_rsa.pub с mongo1
 
 
@@ -137,6 +138,7 @@ sudo apt install sshpass
 #работает
 
 sshpass -P assphrase -p "123" ssh yc-user@mongo1 'hostname; ps -aef | grep mongo | grep -v grep'
+
 sshpass -P assphrase -p "123" ssh yc-user@mongo1 'hostname; sudo dpkg -l | grep mongod'
 
 
@@ -167,8 +169,11 @@ done
 
 
 ps -aef | grep mongo | grep -v grep
+
 sudo dpkg -l | grep mongod
+
 ssh yc-user@mongo1 'ps -aef | grep mongo | grep -v grep'
+
 ssh yc-user@mongo2 'sudo dpkg -l | grep mongod'
 
 #mongo1
@@ -208,7 +213,6 @@ done
 
 #run config servers 1-3
 
-#ok
 for i in {1..3}
 do sshpass -P assphrase -p "123" ssh -p 22 yc-user@mongo$i "sudo mongod --configsvr --bind_ip '0.0.0.0' --dbpath /home/mongo/dbc1 --port 27001 --replSet RScfg --fork --logpath /home/mongo/dbc1/dbc1.log --pidfilepath /home/mongo/dbc1/dbc1.pid"
 done
@@ -232,6 +236,7 @@ rs.initiate({"_id" : "RScfg", configsvr: true, members : [{"_id" : 0, host : "mo
 #rs.add( { host: "mongo1:27001" } )
 
 use admin
+
 db.createUser({user: "UserClusterAdmin",pwd: "123", roles: [ "clusterAdmin" ]})
 
 --Владелец всех БД
@@ -254,6 +259,7 @@ done
 for i in {1..3}
 do sshpass -P assphrase -p "123" ssh -p 22 yc-user@mongo$i "hostname; mongod --auth --configsvr --bind_ip --bind_ip 0.0.0.0 --dbpath /home/mongo/dbc1 --port 27001 --replSet RScfg --fork --logpath /home/mongo/dbc1/dbc1.log --pidfilepath /home/mongo/dbc1/dbc1.pid"
 done
+
 -- BadValue: security.keyFile is required when authorization is enabled with replica sets
 						
 #create folders for mongo-security
@@ -265,10 +271,13 @@ done
 #generate keyfile on 1-st instance
 
 openssl rand -base64 756 > /home/mongo/mongo-security/keyfile
+
 chmod 400 /home/mongo/mongo-security/keyfile
 
 scp /home/mongo/mongo-security/keyfile yc-user@mongo2:/home/mongo/mongo-security/keyfile
+
 scp /home/mongo/mongo-security/keyfile yc-user@mongo3:/home/mongo/mongo-security/keyfile
+
 scp /home/mongo/mongo-security/keyfile yc-user@mongo4:/home/mongo/mongo-security/keyfile
 
 for i in {2..4}
@@ -287,6 +296,7 @@ mongo --port 27001 -u "UserClusterAdmin" -p 123 --authenticationDatabase "admin"
 
 
 rs.config()
+
 rs.status()
 
 **#########################################################################################################**
@@ -323,21 +333,33 @@ done
 #create replicasets on mastert nodes
 
 mongo --host mongo1 --port 27011
+
 rs.initiate({"_id" : "RS1", members : [{"_id" : 0, priority : 3, host : "mongo1:27011"},{"_id" : 1, host : "mongo2:27011"},{"_id" : 2, host : "mongo3:27011"}]});
+
 use admin
+
 db.createUser({user: "UserDBAdmin",pwd: "123", roles: [ { role: "dbAdmin", db: "*" } ]})
+
 db.createUser({user: "UserDBRoot",pwd: "123", roles: [ "root" ]})
 
 mongo --host mongo2 --port 27021
+
 rs.initiate({"_id" : "RS2", members : [{"_id" : 0, host : "mongo1:27021"},{"_id" : 1, priority : 3, host : "mongo2:27021"},{"_id" : 2, host : "mongo3:27021"}]});
+
 use admin
+
 db.createUser({user: "UserDBAdmin",pwd: "123", roles: [ { role: "dbAdmin", db: "*" } ]})
+
 db.createUser({user: "UserDBRoot",pwd: "123", roles: [ "root" ]})
 
 mongo --host mongo3 --port 27031
+
 rs.initiate({"_id" : "RS3", members : [{"_id" : 0, host : "mongo1:27031"},{"_id" : 1, host : "mongo2:27031"},{"_id" : 2, priority : 3, host : "mongo3:27031"}]});
+
 use admin
+
 db.createUser({user: "UserDBAdmin",pwd: "123", roles: [ { role: "dbAdmin", db: "*" } ]})
+
 db.createUser({user: "UserDBRoot",pwd: "123", roles: [ "root" ]})
 
 #stop replicas with data
@@ -381,15 +403,21 @@ done
 #####sharded cluster is ready
 
 mongo --port 27000 --host mongo4 -u "UserRoot" -p 123 --authenticationDatabase "admin"
+
 db.a.insert({"a":1})
+
 MongoBulkWriteError: Database test could not be created :: caused by :: No shards found
 
 ##add shards
 
 use admin
+
 sh.addShard("RS1/mongo1:27011,mongo2:27011,mongo3:27011")
+
 sh.addShard("RS2/mongo1:27021,mongo2:27021,mongo3:27021")
+
 sh.addShard("RS3/mongo1:27031,mongo2:27031,mongo3:27031")
+
 sh.status()
 
 -- Для того чтобы реплика была доступна на чтение:
@@ -410,10 +438,14 @@ done
 ssh mongo4
 #download collection
 
-wget https://dl.dropboxusercontent.com/s/p75zp1karqg6nnn/stocks.zip 
+wget https://dl.dropboxusercontent.com/s/p75zp1karqg6nnn/stocks.zip
+
 sudo apt install unzip
+
 unzip -qo stocks.zip 
+
 cd dump/stocks/
+
 ls -l
 
 #restore collection
@@ -421,11 +453,13 @@ ls -l
 mongorestore --port 27000 -u "UserRoot" -p 123 --authenticationDatabase "admin" values.bson
 
 mongo --port 27000 -u "UserRoot" -p 123 --authenticationDatabase "admin"
+
 db.values.find().limit(1)
 
 
 
 db.values.count()
+
 show databases
 
 
@@ -438,11 +472,13 @@ show databases
 -- посмотрим план
 
 use test
+
 db.values.find({$where: '(this.open - this.close > 100)'}).explain("executionStats")
 
 -- и его тоже не смогли
 
 use test
+
 db.values.createIndex({stock_symbol: 1})
 
 -- меньше 1 минуты индекс
@@ -450,7 +486,9 @@ db.values.createIndex({stock_symbol: 1})
 -- сделал машинки мощнее и теперь 6 секунд 0_0, была e2_small
 
 sh.enableSharding("test")
+
 sh.shardCollection("test.values",{ stock_symbol: 1 })
+
 sh.status()
 
 -- Тоже самое, но через mapreduce.
@@ -466,7 +504,9 @@ var map=function(){
 var reduce=function(key, values) {
      return Array.sum(values);
 };
+
 db.values.mapReduce(map, reduce, {out: 'o' })
+
 db.o.find()
 
 **#########################################################################################################**
@@ -480,11 +520,15 @@ pbm
 #add user for every shard and config server
 
 mongo --port 27001 -u "UserRoot" -p 123 --authenticationDatabase "admin"
+
 mongo --host mongo1 --port 27011 -u "UserDBRoot" -p 123 --authenticationDatabase "admin"
+
 mongo --host mongo2 --port 27021 -u "UserDBRoot" -p 123 --authenticationDatabase "admin"
+
 mongo --host mongo3 --port 27031 -u "UserDBRoot" -p 123 --authenticationDatabase "admin"
 
 use admin
+
 db.getSiblingDB("admin").createRole({ "role": "pbmAnyAction",
       "privileges": [
          { "resource": { "anyResource": true },
@@ -504,6 +548,7 @@ db.getSiblingDB("admin").createUser({user: "pbmuser",
           { "db" : "admin", "role" : "pbmAnyAction" }
        ]
     });
+    
 exit
 
 #check file
@@ -555,7 +600,9 @@ done
 -- journalctl -u pbm-agent.service
 
 ssh mongo1
+
 export PBM_MONGODB_URI="mongodb://pbmuser:secretpwd@localhost:27001/?authSource=admin&replicaSet=RScfg"
+
 pbm list
 
 #run pbm agent
@@ -582,8 +629,11 @@ done
 ps -xf
 
 pbm status
+
 pbm logs
+
 pbm backup 
+
 pbm list
 
 
@@ -619,13 +669,19 @@ vm3=config3 + slave1 + slave2 + primary3 + mongos2
 vm4=mongos1
 
 ssh -p 22 yc-user@mongo3
+
 mongo --port 27001 -u "UserRoot" -p 123 --authenticationDatabase "admin"
+
 sh.stopBalancer()
+
 sh.getBalancerState()
 
 ssh -p 22 yc-user@mongo4
+
 mongo --port 27001 -u "UserRoot" -p 123 --authenticationDatabase "admin"
+
 sh.stopBalancer()
+
 sh.getBalancerState()
 
 
