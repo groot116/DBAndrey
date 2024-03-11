@@ -686,7 +686,9 @@ sudo apt-cache madison percona-server-mongodb
 #ставим пакеты mongodb 5.0
 
 sudo apt update && sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y -q && sudo  wget https://repo.percona.com/apt/percona-release_latest.$(lsb_release -sc)_all.deb && sudo dpkg -i percona-release_latest.$(lsb_release -sc)_all.deb && sudo percona-release enable psmdb-50 release && sudo apt update && sudo DEBIAN_FRONTEND=noninteractive apt install -y percona-server-mongodb
+
 #запускаем процессы монги как было ранее на вм
+
 sudo mongod --auth --keyFile /home/mongo/mongo-security/keyfile --configsvr --bind_ip '0.0.0.0' --dbpath /home/mongo/dbc1 --port 27001 --replSet RScfg --fork --logpath /home/mongo/dbc1/dbc1.log --pidfilepath /home/mongo/dbc1/dbc1.pid;
 mongo --port 27001 -u "UserDBRoot" -p 123 --authenticationDatabase "admin"
 sudo mongod --auth --keyFile /home/mongo/mongo-security/keyfile --shardsvr --dbpath /home/mongo/db1 --bind_ip '0.0.0.0' --port 27011 --replSet RS1 --fork --logpath /home/mongo/db1/dbrs1.log --pidfilepath /home/mongo/db1/dbrs1.pid;
@@ -702,15 +704,23 @@ rs.status()
 
 #mongo1
 ssh -p 22 yc-user@mongo1
+
 #убиваем процессы монги
+
 hostname; sudo ps -aef | grep mongo | grep -v grep |awk '{print $2}' | sudo xargs kill -9
 hostname; sudo dpkg -l | grep hostname; sudo ps -aef | grep mongo | grep -v grep
+
 #удаляем старые пакеты mongodb 4.4
+
 sudo apt purge percona-server-mongodb* && sudo apt purge percona-mongodb* && dpkg --purge percona-server-mongodb-server && sudo percona-release disable all && apt-get update
 sudo apt-cache madison percona-server-mongodb
+
 #ставим пакеты mongodb 5.0
+
 sudo apt update && sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y -q && sudo  wget https://repo.percona.com/apt/percona-release_latest.$(lsb_release -sc)_all.deb && sudo dpkg -i percona-release_latest.$(lsb_release -sc)_all.deb && sudo percona-release enable psmdb-50 release && sudo apt update && sudo DEBIAN_FRONTEND=noninteractive apt install -y percona-server-mongodb
+
 #запускаем процессы монги как было ранее на вм
+
 sudo mongod --auth --keyFile /home/mongo/mongo-security/keyfile --configsvr --bind_ip '0.0.0.0' --dbpath /home/mongo/dbc1 --port 27001 --replSet RScfg --fork --logpath /home/mongo/dbc1/dbc1.log --pidfilepath /home/mongo/dbc1/dbc1.pid;
 mongo --port 27001 -u "UserDBRoot" -p 123 --authenticationDatabase "admin"
 sudo mongod --auth --keyFile /home/mongo/mongo-security/keyfile --shardsvr --dbpath /home/mongo/db1 --bind_ip '0.0.0.0' --port 27011 --replSet RS1 --fork --logpath /home/mongo/db1/dbrs1.log --pidfilepath /home/mongo/db1/dbrs1.pid;
@@ -724,36 +734,50 @@ rs.status()
 
 
 #mongo4 (mongos1)
+
 ssh -p 22 yc-user@mongo4
+
 #убиваем процессы монги
+
 hostname; sudo ps -aef | grep mongo | grep -v grep |awk '{print $2}' | sudo xargs kill -9
 hostname; sudo dpkg -l | grep hostname; sudo ps -aef | grep mongo | grep -v grep
+
 #удаляем старые пакеты mongodb 4.4
+
 sudo apt purge percona-server-mongodb* && sudo apt purge percona-mongodb* && dpkg --purge percona-server-mongodb-server && sudo percona-release disable all && apt-get update
 sudo apt-cache madison percona-server-mongodb
+
 #ставим пакеты mongodb 5.0
+
 sudo apt update && sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y -q && sudo  wget https://repo.percona.com/apt/percona-release_latest.$(lsb_release -sc)_all.deb && sudo dpkg -i percona-release_latest.$(lsb_release -sc)_all.deb && sudo percona-release enable psmdb-50 release && sudo apt update && sudo DEBIAN_FRONTEND=noninteractive apt install -y percona-server-mongodb
+
 #запускаем процессы монги как было ранее на вм
+
 mongos --keyFile /home/mongo/mongo-security/keyfile --configdb RScfg/mongo1:27001,mongo2:27001,mongo3:27001 --bind_ip '0.0.0.0' --port 27000 --fork --logpath /home/mongo/dbms/dbs.log --pidfilepath /home/mongo/dbms/dbs.pid
 mongo --port 27000 -u "UserRoot" -p 123 --authenticationDatabase "admin"
 sh.startBalancer()
 
 
 #mongo3 (mongos2)
+
 ssh -p 22 yc-user@mongo3
 mongos --keyFile /home/mongo/mongo-security/keyfile --configdb RScfg/mongo1:27001,mongo2:27001,mongo3:27001 --bind_ip '0.0.0.0' --port 27000 --fork --logpath /home/mongo/dbms/dbs.log --pidfilepath /home/mongo/dbms/dbs.pid
 mongo --port 27000 -u "UserRoot" -p 123 --authenticationDatabase "admin"
 sh.startBalancer()
 
 #Поднятие версии в кластере до 5.0
+
 #Установка FeatureCompatibilityVersion (fCV): «5.0» неявно выполняет replSetReconfigдля каждого сегмента, чтобы добавить termполе в документ конфигурации реплики сегмента, и блокируется до тех пор, пока новая конфигурация не распространится на большинство членов набора реплик.
+
 #mongo4
+
 ssh -p 22 yc-user@mongo4
 mongo --port 27000 -u "UserRoot" -p 123 --authenticationDatabase "admin"
 db.adminCommand( { setFeatureCompatibilityVersion: "5.0" } )
 
 
 #mongo3
+
 ssh -p 22 yc-user@mongo3
 mongo --port 27000 -u "UserRoot" -p 123 --authenticationDatabase "admin"
 db.adminCommand( { setFeatureCompatibilityVersion: "5.0" } )
@@ -761,11 +785,14 @@ db.adminCommand( { setFeatureCompatibilityVersion: "5.0" } )
 
 
 #Далее аналогично проводим апгрейд от версии 5.0 до 6.0
+
 #учитываем, что mongo --> mongosh для подключения к экземпляру монги
 
 
 #Далее аналогично проводим апгрейд от версии 6.0 до 7.0
+
 #учитываем, что mongo --> mongosh для подключения к экземпляру монги
+
 #не забываем выполнить команду db.adminCommand( { setFeatureCompatibilityVersion: "7.0" } )
 
 
