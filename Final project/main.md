@@ -18,15 +18,21 @@
 **Cоздаем 4 вм c Ubuntu22 в YandexCloud**
 
 vm1: mongo1 (6vCPU, 6GB ram)
+
 vm2: mongo2 (6vCPU, 6GB ram)
+
 vm3: mongo3 (6vCPU, 6GB ram)
+
 vm4: mongo4 (6vCPU, 6GB ram)
 
 **Конфигурация шардированного кластера**
 
 vm1=config1 + primary1 + slave2 + slave3
+
 vm2=config2 + slave1 + primary2 + slave3
+
 vm3=config3 + slave1 + slave2 + primary3 + mongos2
+
 vm4=mongos1
 
 
