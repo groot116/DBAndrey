@@ -9,6 +9,7 @@ vm1: mongo1 (2vCPU, 2GB ram)
 
 
 **Подготовительная работа**
+
 1.1.Установка Yandex Cloud (CLI)
 https://cloud.yandex.ru/ru/docs/cli/quickstart#windows_1
 
