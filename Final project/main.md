@@ -65,6 +65,8 @@ yc compute instance list
 +----------------------+--------+---------------+---------+---------------+-------------+
 
 
+
+
 for ($i = 1; $i -le 4; $i++) {
     yc compute instance stop --name mongo$i
 }
@@ -89,12 +91,14 @@ ssh -i "C:/Distr/.ssh/id_ed25519" yc-user@51.250.90.20
 
 
 #mongo1
+
 ssh-keygen
 #/home/yc-user/.ssh
 id_rsa
 id_rsa.pub
 
 #не работает c mongo1
+
 ssh-copy-id yc-user@mongo2
 
 
@@ -139,6 +143,7 @@ sshpass -P assphrase -p "123" ssh yc-user@mongo1 'hostname; sudo dpkg -l | grep 
 
 
 #install percona mongo 4.4 & backup pbm on vm1-4
+
 #mongo1
 
 sudo apt update && sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y -q && sudo  wget https://repo.percona.com/apt/percona-release_latest.$(lsb_release -sc)_all.deb && sudo dpkg -i percona-release_latest.$(lsb_release -sc)_all.deb && sudo percona-release enable psmdb-44 release && sudo apt update && sudo DEBIAN_FRONTEND=noninteractive apt install -y percona-server-mongodb && sudo percona-release enable pbm release && sudo apt update && sudo DEBIAN_FRONTEND=noninteractive apt install -y percona-backup-mongodb
@@ -610,6 +615,7 @@ db.adminCommand( { getParameter: 1, featureCompatibilityVersion: 1 } )
 #на mongo3,mongo4 отключаем балансировщик
 
 vm3=config3 + slave1 + slave2 + primary3 + mongos2
+
 vm4=mongos1
 
 ssh -p 22 yc-user@mongo3
@@ -626,7 +632,9 @@ sh.getBalancerState()
 #Обновляйте второстепенные члены набора реплик по одному:
 
 vm1=config1 + primary1 + slave2 + slave3
+
 vm2=config2 + slave1 + primary2 + slave3
+
 vm3=config3 + slave1 + slave2 + primary3 + mongos2
 
 #в случае нахождения всех участников на разных вм, нужно выбрать стратегию обновления сначала второстепенных участников и далее обновления первичных путем переключения: rs.stepDown()
