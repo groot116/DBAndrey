@@ -86,7 +86,7 @@ ssh-copy-id yc-user@mongo2
 
 
 vi /home/yc-user/.ssh/id_rsa.pub
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDIlAm7h46a6WxVfO9eesWQDfoxw8CYvq2oasU7/fRBrRQ9bWe7j0vQJk2OQO3nGeXyuSLKoEW2vOoTTYAhE4W8mNK6p6Y2yktg8S+Z3QlPxZyh/iOimWLlDAfpXNq7c+alXZ5hVYXrIgOpH7LoqImg56XhRH+tCX2egXx+sX0CFQyGPud8fQMTSjNmYQQFbZbaEri7bJAnwptklZ3YPjUnKF4EaXxNbew6JrJFEvUNYrokET6BGcyD66BlTXKwK+kvJE9LXmTnmEpVep+Md1zKCJLUTUtnV5LcxHiSwgz23K7jZZVvTjA31UQT/FTU2NOzY7avL2UvBopZzMw3wcEeOzsihH478VUZL3YaMU32M59qeqG9c1w7Tnfak6KBtQ1h31FwyjTfIW2HfIYnXbMRRoy/VRiw+1gkpqTzkoyS5EmsBYQqYdG3cDe1IEFWa8z94hpI6lgvdUrNdCQD9xrtinO2kbniYoWRI8xHBlOARCWoOBvu9LPOSf1hl/H2kFc= yc-user@mongo1
+ssh-rsa ************** yc-user@mongo1
 
 
 yc compute instance get mongo2
