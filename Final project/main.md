@@ -907,10 +907,7 @@ db.adminCommand( { setFeatureCompatibilityVersion: "5.0" } )
 
 #не забываем выполнить команду db.adminCommand( { setFeatureCompatibilityVersion: "7.0" } )
 
-
-
-
-Используемые инструкции:
+**Используемые инструкции:**
 
 1.	https://docs.percona.com/percona-server-for-mongodb/3.6/install/apt.html
 2.	https://docs.percona.com/percona-server-for-mongodb/4.4/install/upgrade-from-mongodb.html
